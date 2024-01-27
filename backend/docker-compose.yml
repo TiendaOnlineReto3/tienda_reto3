@@ -1,0 +1,23 @@
+version: '3'
+services:
+  flask-app:
+    build:
+      context: .
+    ports:
+      - "4000:4000"
+    depends_on:
+      - postgres-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: base_datos
+      DB_HOST: localhost
+      DB_PORT: "5433"  
+  postgres-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: base_datos
+    ports:
+      - "5433:5432"
