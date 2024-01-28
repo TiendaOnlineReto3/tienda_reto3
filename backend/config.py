@@ -14,3 +14,9 @@ SQLALCHEMY_DATABASE_URI = (
     f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+# Configuración de Flask-Security
+SECURITY_PASSWORD_SALT = (
+    "tu_salt_secreto"  # Reemplaza 'tu_salt_secreto' con un valor secreto y único
+)
+SECURITY_PASSWORD_HASH = "bcrypt"
