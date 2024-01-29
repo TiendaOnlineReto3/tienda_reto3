@@ -16,6 +16,7 @@ SQLALCHEMY_DATABASE_URI = (
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Configuración de Flask-Security
+SECRET_KEY = "tu_clave_secreta_aqui"  # Clave secreta flask
 SECURITY_PASSWORD_SALT = (
     "tu_salt_secreto"  # Reemplaza 'tu_salt_secreto' con un valor secreto y único
 )

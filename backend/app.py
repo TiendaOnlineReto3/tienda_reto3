@@ -1,19 +1,8 @@
 import os
-from flask import (
-    Flask,
-    jsonify,
-    request,
-    send_from_directory,
-    redirect,
-    url_for,
-    render_template,
-)
-from flask_restful import Api, Resource, reqparse
-from flask_sqlalchemy import SQLAlchemy
-from flask_admin import Admin, AdminIndexView
+from flask import Flask, redirect, url_for, request, send_from_directory
+from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.contrib.sqla import ModelView
-from werkzeug.utils import secure_filename
-from flask_admin.form.upload import ImageUploadField
+from flask_sqlalchemy import SQLAlchemy
 from flask_security import (
     Security,
     SQLAlchemyUserDatastore,
@@ -23,26 +12,42 @@ from flask_security import (
     current_user,
 )
 from flask_wtf.csrf import CSRFProtect
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from flask_login import login_user
-from flask import redirect, url_for
-from flask_admin import AdminIndexView
-from flask_login import current_user, logout_user
-
+from flask_admin.form.upload import ImageUploadField
+from werkzeug.utils import secure_filename
+from flask_restful import Api, Resource, reqparse
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 app.config.from_pyfile("config.py")
 
-# Configura una clave secreta para las sesiones
-app.secret_key = "clavesupersecreta12345"  # Reemplaza con una cadena única y secreta
 
-# Configura la carpeta donde se subirán las imágenes
+# Define a route for the root URL ("/")
+@app.route("/")
+def index():
+    if current_user.is_authenticated:
+        # Si el usuario está logueado, redirige a la página de administrador
+        return redirect(url_for("admin.index"))
+    else:
+        # Si el usuario no está logueado, redirige a la página de login
+        return redirect(url_for("security.login"))
+
+
+@app.route("/images/articulo/<int:id>")
+def get_image(id):
+    articulo = Articulo.query.get(id)
+    if articulo and articulo.imagen:
+        return send_from_directory(app.config["UPLOAD_FOLDER"], articulo.imagen)
+    else:
+        return {"message": "Imagen no encontrada"}, 404
+
+
+# Configuración de la carpeta donde se subirán las imágenes
 UPLOAD_FOLDER = "img"
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-# Configura la base de datos
+# Configuración de la base de datos
 db = SQLAlchemy(app)
 
 # Define la tabla roles_users
@@ -78,6 +83,7 @@ security = Security(app, user_datastore)
 
 # Configuración de Flask-WTF CSRF
 csrf = CSRFProtect(app)
+csrf.init_app(app)
 
 
 # Define el modelo de Articulo
@@ -85,24 +91,19 @@ class Articulo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(50), nullable=False)
     precio = db.Column(db.Float, nullable=False)
-    imagen = ImageUploadField(
-        label="Imagen",
-        base_path=app.config["UPLOAD_FOLDER"],
-        relative_path="img/",
-        url_relative_path="img/",
-    )
+    imagen = db.Column(db.String(255))
     descripcion = db.Column(db.String(200))
     categoria = db.Column(db.String(50))
 
 
-# Crear roles y un usuario administrador por defecto
+# Crea roles y un usuario administrador por defecto
 with app.app_context():
     db.create_all()
 
-    # Buscar un usuario con el email proporcionado
+    # Busca un usuario con el email proporcionado
     admin_user = user_datastore.find_user(email="admin@example.com")
 
-    # Crear el usuario administrador si no existe
+    # Crea el usuario administrador si no existe
     if not admin_user:
         admin_user = user_datastore.create_user(
             email="admin@example.com", password="admin"
@@ -115,16 +116,21 @@ with app.app_context():
 
 # Define la vista personalizada de administrador
 class MyAdminIndexView(AdminIndexView):
+    @expose("/")
+    def index(self):
+        if not current_user.is_authenticated:
+            # If user is not logged in, redirect to the login page
+            return redirect(url_for("security.login"))
+        return super(MyAdminIndexView, self).index()
+
     def is_accessible(self):
         return current_user.is_authenticated
 
     def inaccessible_callback(self, name, **kwargs):
-        # redirect to login page if user doesn't have access
-        return redirect(url_for("login"))
+        return redirect(url_for("security.login"))
 
     def render(self, template, **kwargs):
-        # Agregar un enlace/botón de logout en la barra de navegación
-        self._template_args["logout_url"] = url_for("logout")
+        self._template_args["logout_url"] = url_for("security.logout")
         return super(MyAdminIndexView, self).render(template, **kwargs)
 
 
@@ -133,54 +139,52 @@ admin = Admin(
     app, name="Admin", index_view=MyAdminIndexView(), template_mode="bootstrap3"
 )
 
-# Protege toda la interfaz de administración con el decorador login_required
+
+# Define el modelo de vista personalizado
+class MyModelView(ModelView):
+    form_extra_fields = {
+        "imagen": ImageUploadField(
+            "Imagen",
+            base_path=app.config["UPLOAD_FOLDER"],
+            relative_path="img/",
+            url_relative_path="img/",
+        )
+    }
+
+    def create_model(self, form):
+        model = self.model()
+
+        image_file = form.imagen.data
+        if image_file:
+            image_path = os.path.join(
+                app.config["UPLOAD_FOLDER"], secure_filename(image_file.filename)
+            )
+            image_file.save(image_path)
+            setattr(model, "imagen", secure_filename(image_file.filename))
+
+        form.populate_obj(model)
+        self.session.add(model)
+        self._on_model_change(form, model, True)
+        self.session.commit()
+        return True
+
+
+# Agrega la vista personalizada al admin
 admin.add_view(
-    ModelView(Articulo, db.session, endpoint="admin_articulo", category="Articulos")
+    MyModelView(
+        Articulo,
+        db.session,
+        endpoint="admin_articulo_view",
+        category="Articulos",
+        url="articulo",
+    )
 )
 
 admin.add_view(ModelView(User, db.session, endpoint="admin_user", category="Usuarios"))
-
 admin.add_view(ModelView(Role, db.session, endpoint="admin_role", category="Roles"))
-
 admin.logout_endpoint = "logout"
 
-
-# Ruta para servir imágenes estáticas
-# @app.route("/img/<filename>")
-# def uploaded_file(filename):
-#     return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
-
-
-# Ruta para el login
-from forms import LoginForm
-
-
-# Ruta para el login
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    form = LoginForm()
-
-    if form.validate_on_submit():
-        user = user_datastore.get_user(form.email.data)
-        login_user(user)
-
-        # Imprime información sobre el usuario autenticado
-        print(f"Usuario autenticado: {current_user}")
-
-        return redirect(url_for("admin.index_view"))
-
-    return render_template("login.html", form=form)
-
-
-# Ruta para el logout
-@app.route("/logout")
-@login_required  # Asegura que solo usuarios autenticados puedan acceder a la ruta de logout
-def logout():
-    logout_user()
-    return redirect(url_for("login"))
-
-
-# Configura la API
+# Configuración de la API
 api = Api(app)
 
 
@@ -194,7 +198,7 @@ class ArticuloResource(Resource):
                     "id": articulo.id,
                     "nombre": articulo.nombre,
                     "precio": articulo.precio,
-                    "imagen": articulo.imagen,
+                    "imagen": url_for("get_image", id=articulo.id),  # Updated line
                     "descripcion": articulo.descripcion,
                     "categoria": articulo.categoria,
                 }
@@ -208,7 +212,7 @@ class ArticuloResource(Resource):
                         "id": articulo.id,
                         "nombre": articulo.nombre,
                         "precio": articulo.precio,
-                        "imagen": articulo.imagen,
+                        "imagen": url_for("get_image", id=articulo.id),  # Updated line
                         "descripcion": articulo.descripcion,
                         "categoria": articulo.categoria,
                     }
@@ -230,17 +234,17 @@ class ArticuloResource(Resource):
             file = request.files["imagen"]
             if file.filename == "":
                 return {"message": "No se seleccionó un archivo de imagen"}, 400
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-                file.save(file_path)
+            if file and file.filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS:
+                image_data = file.read()
+
                 nuevo_articulo = Articulo(
                     nombre=data["nombre"],
                     precio=data["precio"],
-                    imagen=file_path,
+                    imagen=image_data,
                     descripcion=data["descripcion"],
                     categoria=data["categoria"],
                 )
+
                 db.session.add(nuevo_articulo)
                 db.session.commit()
                 return {"message": "Artículo creado"}, 201
@@ -280,9 +284,23 @@ class ArticuloResource(Resource):
         else:
             return {"message": "Artículo no encontrado"}, 404
 
+    def get_image(self, id):
+        articulo = Articulo.query.get(id)
+        if articulo and articulo.imagen:
+            return send_from_directory(app.config["UPLOAD_FOLDER"], articulo.imagen)
+        else:
+            return {"message": "Imagen no encontrada"}, 404
+
 
 # Agrega el recurso Articulo a la API
-api.add_resource(ArticuloResource, "/articulo", "/articulo/<int:id>")
+api.add_resource(
+    ArticuloResource,
+    "/articulo",
+    "/articulo/<int:id>",
+    "/images/<filename>",
+    "/images/articulo/<int:id>",
+)
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=4000)
