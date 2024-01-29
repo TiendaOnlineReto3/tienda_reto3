@@ -44,26 +44,21 @@ def load_user(user_id):
 from flask import render_template
 
 
-# Update the login route
-@app.route("/login", methods=["GET", "POST"])
+# Define la ruta para el login
+@app.route("/login", methods=["POST"])
 def login():
-    if (
-        request.method == "POST"
-        and "email" in request.form
-        and "password" in request.form
-    ):
+    if "email" in request.form and "password" in request.form:
         email = request.form["email"]
         password = request.form["password"]
         user = user_datastore.find_user(email=email)
         if user and security.check_password_hash(user.password, password):
             login_user(user)
-            return redirect(url_for("index"))
+            access_token = create_access_token(identity=user.id)
+            return jsonify(access_token=access_token), 200
         else:
-            flash("Invalid email or password", "error")
-    return render_template("login.html")  # Create a login.html template for login form
-
-
-from flask_login import logout_user
+            return jsonify(message="Invalid email or password"), 401
+    else:
+        return jsonify(message="Missing email or password"), 400
 
 
 # Update the logout route
