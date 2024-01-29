@@ -1,5 +1,5 @@
 import os
-from flask import Flask, redirect, url_for, request, send_from_directory
+from flask import Flask, redirect, url_for, request, send_from_directory, jsonify
 from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.contrib.sqla import ModelView
 from flask_sqlalchemy import SQLAlchemy
@@ -8,7 +8,6 @@ from flask_security import (
     SQLAlchemyUserDatastore,
     UserMixin,
     RoleMixin,
-    login_required,
     current_user,
 )
 from flask_wtf.csrf import CSRFProtect
@@ -16,10 +15,79 @@ from flask_admin.form.upload import ImageUploadField
 from werkzeug.utils import secure_filename
 from flask_restful import Api, Resource, reqparse
 from flask_cors import CORS
+from flask_login import LoginManager, login_user, logout_user, login_required
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    jwt_required,
+    get_jwt_identity,
+)
 
 app = Flask(__name__)
 CORS(app)
 app.config.from_pyfile("config.py")
+
+# Configure Flask-Login
+login_manager = LoginManager(app)
+login_manager.login_view = "login"
+
+# Configure Flask-JWT-Extended
+app.config["JWT_SECRET_KEY"] = "your-secret-key"
+jwt = JWTManager(app)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+
+from flask import render_template
+
+
+# Update the login route
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if (
+        request.method == "POST"
+        and "email" in request.form
+        and "password" in request.form
+    ):
+        email = request.form["email"]
+        password = request.form["password"]
+        user = user_datastore.find_user(email=email)
+        if user and security.check_password_hash(user.password, password):
+            login_user(user)
+            return redirect(url_for("index"))
+        else:
+            flash("Invalid email or password", "error")
+    return render_template("login.html")  # Create a login.html template for login form
+
+
+from flask_login import logout_user
+
+
+# Update the logout route
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("index"))
+
+
+# Token-based authentication route
+@app.route("/get_token", methods=["POST"])
+def get_token():
+    if "email" in request.form and "password" in request.form:
+        email = request.form["email"]
+        password = request.form["password"]
+        user = user_datastore.find_user(email=email)
+        if user and security.check_password_hash(user.password, password):
+            access_token = create_access_token(identity=user.id)
+            return {"access_token": access_token}, 200
+        else:
+            return {"message": "Invalid email or password"}, 401
+    else:
+        return {"message": "Missing email or password"}, 400
 
 
 # Define a route for the root URL ("/")
