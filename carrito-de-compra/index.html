@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito de Compras con Vue.js</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Varela&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+
+<body>
+
+  <div id="app">
+    <nav class="nav openSearch"> <!-- Añade la clase "openSearch" aquí para mantener siempre abierto el buscador -->
+      <i class="uil uil-bars navOpenBtn"></i>
+      <a href="#" class="logo">CodingLab</a>
+      <div class="search-box">
+        <i class="uil uil-search search-icon"></i>
+        <input type="text" placeholder="Search here..." v-model="searchQuery" />
+      </div>
+      <ul class="nav-links">
+        <li><i class="uil uil-times navCloseBtn"></i></li>
+        <li class="registrarse"><a href="www.google.es">Registrarse</a></li>
+        <li style="color:#fff !important" class="login"><a href="www.google.es">Iniciar sesión</a></li>
+
+      </ul>
+
+
+    </nav>
+    <main>
+      
+
+      <h1 style="margin: 20px 10px;">Seleccione la categoria</h1>
+
+      <div class="category-nav">
+        <div class="category-filter">
+          <button @click="filterByCategory('Todos')" :class="{ 'active': currentCategory === 'Todos' }">Todo</button>
+          <button @click="filterByCategory('Cazadora')"
+            :class="{ 'active': currentCategory === 'Cazadora' }">Cazadora</button>
+          <button @click="filterByCategory('Camiseta')"
+            :class="{ 'active': currentCategory === 'Camiseta' }">Camiseta</button>
+          <button @click="filterByCategory('Pantalon')"
+            :class="{ 'active': currentCategory === 'Pantalon' }">Pantalon</button>
+          <button @click="filterByCategory('Sudadera')"
+            :class="{ 'active': currentCategory === 'Sudadera' }">Sudadera</button>
+        </div>
+        <div class="filter-icons">
+        
+        
+        <div class="view-icons">
+          <i   style="margin:0px 8px"class="fas fa-th" @click="setGridView"><span class="material-symbols-outlined md-32">
+            grid_view
+          </span></i> <!-- Icono de cuadrícula -->
+          <i class="fas fa-bars" @click="setRowView"><span class="material-symbols-outlined md-32">
+            table_rows
+          </span></i> <!-- Icono de fila -->
+        </div>
+      </div>
+      </div>
+      <section class="card-section" :class="{ 'grid-view': isGridView, 'row-view': !isGridView }">
+        <div class="card-row" @mousedown="handleMouseDown" @mouseup="handleMouseUp" @mousemove="handleMouseMove"
+          @mouseleave="handleMouseUp" ref="cardRow">
+          <div v-for="(product, index) in filteredProducts" :key="index" class="product-card">
+
+            <img :src="product.image" alt="Product Image">
+            <div class="card-content">
+              <div class="title-favorite">
+                <h3>{{ product.nombre }}</h3>
+                <button class="favorite" @click="addToFavorites(index)" :class="{ 'active': isFavorite(index) }">
+                  <span class="material-symbols-outlined favorite-icon ">favorite</span>
+                </button>
+              </div>
+              <p class="product-description">{{ product.description }}</p>
+              <div class="price-cuantity">
+                <p class="product-price">{{ formatPrice(product.price) }} {{ selectedCurrency }}</p>
+                <label>
+                  <span class="material-symbols-outlined md-18" @click="decreaseQuantity(product)">
+                    remove
+                  </span>
+                  <input type="number" v-model="product.quantity" min="1">
+                  <span class="material-symbols-outlined md-18" @click="increaseQuantity(product)">
+                    add
+                  </span>
+                </label>
+              </div>
+            </div>
+            <div class="card-inputs">
+              <button class="añadir-carrito" @click="addToCart(index, product.quantity)">Agregar al carrito</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+
+
+
+
+
+
+      <div id="cart" :class="{ 'open': isCartOpen }">
+        <div class="cart-header">
+          <h2>Carrito</h2>
+          <button @click="toggleCart" class="close-icon">Cerrar</button>
+        </div>
+        <ul>
+          <li v-for="(item, index) in cart" :key="index">
+            <div class="cart-item">
+              <img :src="products[item.index].image" alt="Product Image">
+              <div class="cart-item-info">
+                <p class="carrito-item-title">{{ products[item.index].title }}</p>
+                <p>Precio: {{ formatPrice(products[item.index].price) }} {{ selectedCurrency }}</p>
+                <p>Cantidad: {{ item.quantity }}</p>
+                <button @click="removeFromCart(index)" class="remove-button">Eliminar</button>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <p>Total: {{ formatPrice(calculateTotal()) }} {{ selectedCurrency }}</p>
+
+        <!-- Nuevo botón "Comprar" -->
+        <button class="buy-button">Comprar</button>
+      </div>
+
+      <button @click="toggleCart" class="open-cart-icon" v-if="!isCartOpen">
+        <span class="material-symbols-outlined md-48"> shopping_cart</span>
+        <div class="cart-update-indicator" v-show="isUpdateIndicatorVisible">
+          {{ countTotalItemsInCart() }}
+        </div>
+      </button>
+  </div>
+
+  <!-- Agregar este select al inicio del body -->
+  <select v-model="selectedCurrency" @change="updateCurrency">
+    <option value="USD">USD</option>
+    <option value="EUR">EUR</option>
+    <!-- Agrega más opciones según las monedas que desees soportar -->
+  </select>
+  </main>
+
+  <script src="main.js">
+  </script>
+
+</body>
+
+</html>
