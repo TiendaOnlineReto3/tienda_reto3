@@ -22,6 +22,7 @@ from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity,
 )
+from werkzeug.local import _request_ctx_stack
 
 app = Flask(__name__)
 CORS(app)

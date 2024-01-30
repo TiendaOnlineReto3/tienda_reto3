@@ -56,9 +56,9 @@
                   <span class="material-symbols-outlined favorite-icon ">favorite</span>
                 </button>
               </div>
-              <p class="product-description">{{ product.description }}</p>
+              <p class="product-description">{{ product.descripcion }}</p>
               <div class="price-cuantity">
-                <p class="product-price">{{ formatPrice(product.price) }} {{ selectedCurrency }}</p>
+                <p class="product-price">{{ formatPrice(product.precio) }} {{ selectedCurrency }}</p>
                 <label>
                   <span class="material-symbols-outlined md-18" @click="decreaseQuantity(product)">
                     remove
