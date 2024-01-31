@@ -16,7 +16,7 @@ const app = Vue.createApp({
                     id:2,
                     nombre: 'Chaqueta de plumón',
                     image: 'img/chaqueta2.avif',
-                    description: 'Packaway de tela con capucha y cremallera',
+                    description: 'Packaway de tela con capucha y cremallera reversible',
                     price: 49.99,
                     quantity: 1,
                     category: 'Cazadora',
@@ -41,7 +41,7 @@ const app = Vue.createApp({
                 },
                 {
                     id:5,
-                    nombre: 'Chaqueta bomber',
+                    nombre: 'Chaqueta acolchada',
                     image: 'img/chaqueta5.avif',
                     description: 'Lacoste en tafetán acolchado con diseño reversible',
                     price: 49.99,
@@ -49,152 +49,154 @@ const app = Vue.createApp({
                     category: 'Cazadora',
                 },
                 {
-                    id:6,
-                    nombre: 'Camiseta1',
+                    id: 6,
+                    nombre: 'Polo Clásico',
                     image: 'img/camiseta1.avif',
-                    description: 'Lacoste en tafetán acolchado con diseño reversible',
-                    price: 49.99,
+                    description: 'Polo clásico de Lacoste con un toque moderno y elegante',
+                    price: 59.99,
                     quantity: 1,
                     category: 'Camiseta',
                 },
                 {
-                    id:7,
-                    nombre: 'Camiseta2',
+                    id: 7,
+                    nombre: 'Camiseta Polo Slim Fit',
                     image: 'img/camiseta2.avif',
-                    description: 'Lacoste en tafetán acolchado con diseño reversible',
-                    price: 49.99,
+                    description: 'Camiseta polo de Lacoste en ajuste Slim Fit para un estilo vanguardista',
+                    price: 69.99,
                     quantity: 1,
                     category: 'Camiseta',
                 },
                 {
-                    id:8,
-                    nombre: 'Camiseta3',
+                    id: 8,
+                    nombre: 'Camiseta Casual Lacoste',
                     image: 'img/camiseta3.avif',
-                    description: 'Lacoste en tafetán acolchado con diseño reversible',
-                    price: 49.99,
+                    description: 'Camiseta casual Lacoste con detalles distintivos y comodidad excepcional',
+                    price: 79.99,
                     quantity: 1,
                     category: 'Camiseta',
                 },
                 {
-                    id:9,
-                    nombre: 'Camiseta4',
+                    id: 9,
+                    nombre: 'Camiseta Elegante',
                     image: 'img/camiseta4.avif',
-                    description: 'Lacoste en tafetán acolchado con diseño reversible',
-                    price: 49.99,
+                    description: 'Camiseta elegante de Lacoste con diseño sofisticado y calidad premium',
+                    price: 89.99,
                     quantity: 1,
                     category: 'Camiseta',
                 },
                 {
-                    id:10,
-                    nombre: 'Camiseta5',
-                    image: 'img/camiseta5.avif',
-                    description: 'Lacoste en tafetán acolchado con diseño reversible',
-                    price: 49.99,
-                    quantity: 1,
-                    category: 'Camiseta',
-                },
-                {
-                    id:11,
-                    nombre: 'Pantalon1',
+                    id: 10,
+                    nombre: 'Pantalón Deportivo',
                     image: 'img/pantalon1.avif',
-                    description: 'Lacoste en tafetán acolchado con diseño reversible',
-                    price: 49.99,
+                    description: 'Pantalón deportivo de Lacoste con estilo moderno y confort excepcional',
+                    price: 99.99,
                     quantity: 1,
                     category: 'Pantalon',
                 },
                 {
-                    id:12,
-                    nombre: 'Pantalon2',
+                    id: 11,
+                    nombre: 'Pantalón Chino Slim Fit',
                     image: 'img/pantalon2.avif',
-                    description: 'Lacoste en tafetán acolchado con diseño reversible',
-                    price: 49.99,
+                    description: 'Pantalón chino de Lacoste en ajuste Slim Fit para un look casual y elegante',
+                    price: 109.99,
                     quantity: 1,
                     category: 'Pantalon',
                 },
                 {
-                    id:13,
-                    nombre: 'Pantalon3',
+                    id: 12,
+                    nombre: 'Pantalón Jogger Lacoste',
                     image: 'img/pantalon3.avif',
-                    description: 'Lacoste en tafetán acolchado con diseño reversible',
-                    price: 49.99,
+                    description: 'Pantalón jogger de Lacoste para un estilo urbano y comodidad sin igual',
+                    price: 119.99,
                     quantity: 1,
                     category: 'Pantalon',
                 },
                 {
-                    id:14,
-                    nombre: 'Pantalon4',
+                    id: 13,
+                    nombre: 'Pantalón Cargo Moderno',
                     image: 'img/pantalon4.avif',
-                    description: 'Lacoste en tafetán acolchado con diseño reversible',
-                    price: 49.99,
+                    description: 'Pantalón cargo de Lacoste con diseño moderno y múltiples bolsillos funcionales',
+                    price: 129.99,
                     quantity: 1,
                     category: 'Pantalon',
                 },
                 {
-                    id:15,
-                    nombre: 'Pantalon5',
+                    id: 14,
+                    nombre: 'Pantalón Elegante',
                     image: 'img/pantalon5.avif',
-                    description: 'Lacoste en tafetán acolchado con diseño reversible',
-                    price: 49.99,
+                    description: 'Pantalón elegante de Lacoste con tejido premium y detalles refinados',
+                    price: 139.99,
                     quantity: 1,
                     category: 'Pantalon',
                 },
                 {
-                    id:16,
-                    nombre: 'Sudadera1',
+                    id: 15,
+                    nombre: 'Sudadera Clásica Lacoste',
                     image: 'img/sudadera1.avif',
-                    description: 'Lacoste en tafetán acolchado con diseño reversible',
-                    price: 49.99,
+                    description: 'Sudadera clásica de Lacoste con logo icónico y comodidad inigualable',
+                    price: 149.99,
                     quantity: 1,
                     category: 'Sudadera',
                 },
                 {
-                    id:17,
-                    nombre: 'Sudadera2',
+                    id: 16,
+                    nombre: 'Sudadera con Cierre',
                     image: 'img/sudadera2.avif',
-                    description: 'Lacoste en tafetán acolchado con diseño reversible',
-                    price: 49.99,
+                    description: 'Sudadera con cierre de Lacoste para un estilo versátil y moderno',
+                    price: 159.99,
                     quantity: 1,
                     category: 'Sudadera',
                 },
                 {
-                    id:18,
-                    nombre: 'Sudadera3',
+                    id: 17,
+                    nombre: 'Sudadera Deportiva',
                     image: 'img/sudadera3.avif',
-                    description: 'Lacoste en tafetán acolchado con diseño reversible',
-                    price: 49.99,
+                    description: 'Sudadera deportiva de Lacoste con tecnología avanzada y diseño deportivo',
+                    price: 169.99,
                     quantity: 1,
                     category: 'Sudadera',
                 },
                 {
-                    id:19,
-                    nombre: 'Sudadera4',
+                    id: 18,
+                    nombre: 'Sudadera Elegante',
                     image: 'img/sudadera4.avif',
-                    description: 'Lacoste en tafetán acolchado con diseño reversible',
-                    price: 49.99,
+                    description: 'Sudadera elegante de Lacoste con detalles refinados y estilo atemporal',
+                    price: 179.99,
                     quantity: 1,
                     category: 'Sudadera',
                 },
                 {
-                    id:20,
-                    nombre: 'Sudadera5',
+                    id: 19,
+                    nombre: 'Sudadera con Capucha',
                     image: 'img/sudadera5.avif',
-                    description: 'Lacoste en tafetán acolchado con diseño reversible',
-                    price: 49.99,
+                    description: 'Sudadera con capucha de Lacoste para un look moderno y protección adicional',
+                    price: 189.99,
                     quantity: 1,
                     category: 'Sudadera',
+                },
+                {
+                    id: 20,
+                    nombre: 'Camiseta Suelta',
+                    image: 'img/chaqueta5.avif',
+                    description: 'Camiseta suelta de Lacoste con diseño reversible y estilo vanguardista',
+                    price: 199.99,
+                    quantity: 1,
+                    category: 'Camiseta',
                 },
                 
             ],
-            
+            isGridView: false,
             cart: [],
             isCartOpen: false,
             isUpdateIndicatorVisible: false,
             selectedCurrency: '', // Moneda por defecto
-            selectedCategory: 'Todos', // Categoría por defecto
+            selectedCategory: 'Todos', // Agrega esta línea
             favorites: [],
             isDragging: false,
             startX: 0,
             scrollLeft: 0,
+            searchQuery: ''
+
 
         };
     },
@@ -218,9 +220,34 @@ const app = Vue.createApp({
                 return this.products.filter(product => product.category === this.selectedCategory);
             }
         },
+        filteredProducts() {
+            if (this.selectedCategory === 'Todos') {
+                return this.products.filter(product =>
+                    product.nombre.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                    product.description.toLowerCase().includes(this.searchQuery.toLowerCase())
+                );
+            } else {
+                return this.products.filter(product =>
+                    (product.category === this.selectedCategory) &&
+                    (product.nombre.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                    product.description.toLowerCase().includes(this.searchQuery.toLowerCase()))
+                );
+            }
+        },
     },
     methods: {
-        
+        toggleView() {
+            this.isGridView = !this.isGridView;
+          },
+          setGridView() {
+            this.isGridView = true;
+          },
+          setRowView() {
+            this.isGridView = false;
+          },
+        selectCategory(category) {
+            this.selectedCategory = category;
+        },
         decreaseQuantity(product) {
             if (product.quantity > 1) {
               product.quantity--;
@@ -317,7 +344,10 @@ const app = Vue.createApp({
     mounted() {
         // Inicialmente, actualizar la moneda al cargar la página
         this.updateCurrency();
+        document.addEventListener('mousemove', this.handleMouseMove);
+
     },
+    
 
 });
 

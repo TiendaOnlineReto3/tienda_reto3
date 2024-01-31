@@ -23,7 +23,7 @@
       <a href="#" class="logo">CodingLab</a>
       <div class="search-box">
         <i class="uil uil-search search-icon"></i>
-        <input type="text" placeholder="Search here..." />
+        <input type="text" placeholder="Search here..." v-model="searchQuery" />
       </div>
       <ul class="nav-links">
         <li><i class="uil uil-times navCloseBtn"></i></li>
@@ -35,112 +35,74 @@
 
     </nav>
     <main>
+      
+
       <h1 style="margin: 20px 10px;">Seleccione la categoria</h1>
-      <div class="category-filter">
-        <button @click="filterByCategory('Todos')" class="active">Todo</button>
-        <button @click="filterByCategory('Cazadora')">Cazadora</button>
-        <button @click="filterByCategory('Camiseta')">Camiseta</button>
-        <button @click="filterByCategory('Pantalon')">Pantalon</button>
-        <button @click="filterByCategory('Sudadera')">Sudadera</button>
+
+      <div class="category-nav">
+        <div class="category-filter">
+          <button @click="filterByCategory('Todos')" :class="{ 'active': currentCategory === 'Todos' }">Todo</button>
+          <button @click="filterByCategory('Cazadora')"
+            :class="{ 'active': currentCategory === 'Cazadora' }">Cazadora</button>
+          <button @click="filterByCategory('Camiseta')"
+            :class="{ 'active': currentCategory === 'Camiseta' }">Camiseta</button>
+          <button @click="filterByCategory('Pantalon')"
+            :class="{ 'active': currentCategory === 'Pantalon' }">Pantalon</button>
+          <button @click="filterByCategory('Sudadera')"
+            :class="{ 'active': currentCategory === 'Sudadera' }">Sudadera</button>
+        </div>
+        <div class="filter-icons">
+        
+        
+        <div class="view-icons">
+          <i   style="margin:0px 8px"class="fas fa-th" @click="setGridView"><span class="material-symbols-outlined md-32">
+            grid_view
+          </span></i> <!-- Icono de cuadrícula -->
+          <i class="fas fa-bars" @click="setRowView"><span class="material-symbols-outlined md-32">
+            table_rows
+          </span></i> <!-- Icono de fila -->
+        </div>
       </div>
-      <section class="card-section">
+      </div>
+      <section class="card-section" :class="{ 'grid-view': isGridView, 'row-view': !isGridView }">
         <div class="card-row" @mousedown="handleMouseDown" @mouseup="handleMouseUp" @mousemove="handleMouseMove"
-          @mouseleave="handleMouseUp" ref="cardRow">
-          <div v-for="(product, index) in filteredProducts" :key="index" class="product-card">
-
-            <img :src="product.image" alt="Product Image">
-            <div class="card-content">
-              <div class="title-favorite">
-                <h3>{{ product.nombre }}</h3>
-                <button class="favorite" @click="addToFavorites(index)" :class="{ 'active': isFavorite(index) }">
-                  <span class="material-symbols-outlined favorite-icon ">favorite</span>
-                </button>
-              </div>
-              <p class="product-description">{{ product.description }}</p>
-              <div class="price-cuantity">
-                <p class="product-price">{{ formatPrice(product.price) }} {{ selectedCurrency }}</p>
-                <label>
-                  <span class="material-symbols-outlined md-18" @click="decreaseQuantity(product)">
-                    remove
-                  </span>
-                  <input type="number" v-model="product.quantity" min="1">
-                  <span class="material-symbols-outlined md-18" @click="increaseQuantity(product)">
-                    add
-                  </span>
-                </label>
-              </div>
-            </div>
-            <div class="card-inputs">
-              <button class="añadir-carrito" @click="addToCart(index, product.quantity)">Agregar al carrito</button>
-            </div>
-          </div>
-
+  @mouseleave="handleMouseUp" ref="cardRow">
+  <div v-for="(product, index) in filteredProducts" :key="index" class="product-card">
+    <div class="card-container">
+      <img :src="product.image" alt="Product Image">
+      <button class="favorite" @click="addToFavorites(index)" :class="{ 'active': isFavorite(index) }">
+        <span class="material-symbols-outlined favorite-icon">favorite</span>
+      </button>
+      <div class="card-content">
+        <h3>{{ product.nombre }}</h3>
+        <p class="product-description">{{ product.description }}</p>
+        <div class="price-cuantity">
+          <p class="product-price">{{ formatPrice(product.price) }} {{ selectedCurrency }}</p>
+          <label>
+            <span class="material-symbols-outlined md-18" @click="decreaseQuantity(product)">
+              remove
+            </span>
+            <input type="number" v-model="product.quantity" min="1">
+            <span class="material-symbols-outlined md-18" @click="increaseQuantity(product)">
+              add
+            </span>
+          </label>
         </div>
+      </div>
+      <div class="card-inputs">
+        <button class="añadir-carrito" @click="addToCart(index, product.quantity)">Agregar al carrito</button>
+      </div>
+    </div>
+  </div>
+</div>
       </section>
 
-      <h1>Cazadoras</h1>
 
-      <section class="card-section">
-        <div class="card-row">
-          <div v-for="(product, index) in filteredCazadoras" :key="index" class="product-card">
-            <img :src="product.image" alt="Product Image">
-            <h3>{{ product.nombre }}</h3>
-            <p>{{ product.description }}</p>
-            <p>Precio: {{ formatPrice(product.price) }} {{ selectedCurrency }}</p>
-            <label>Cantidad:
-              <input type="number" v-model="product.quantity" min="1">
-            </label>
-            <button @click="addToCart(index, product.quantity)">Agregar al carrito</button>
-          </div>
-        </div>
-      </section>
 
-      <h1>Camisetas</h1>
-      <section class="card-section">
-        <div class="card-row">
-          <div v-for="(product, index) in filteredCamisetas" :key="index" class="product-card">
-            <img :src="product.image" alt="Product Image">
-            <h3>{{ product.nombre }}</h3>
-            <p>{{ product.description }}</p>
-            <p>Precio: {{ formatPrice(product.price) }} {{ selectedCurrency }}</p>
-            <label>Cantidad:
-              <input type="number" v-model="product.quantity" min="1">
-            </label>
-            <button @click="addToCart(index, product.quantity)">Agregar al carrito</button>
-          </div>
-        </div>
-      </section>
-      <h1>Pantalones</h1>
 
-      <section class="card-section">
-        <div class="card-row">
-          <div v-for="(product, index) in filteredPantalones" :key="index" class="product-card">
-            <img :src="product.image" alt="Product Image">
-            <h3>{{ product.nombre }}</h3>
-            <p>{{ product.description }}</p>
-            <p>Precio: {{ formatPrice(product.price) }} {{ selectedCurrency }}</p>
-            <label>Cantidad:
-              <input type="number" v-model="product.quantity" min="1">
-            </label>
-            <button @click="addToCart(index, product.quantity)">Agregar al carrito</button>
-          </div>
-        </div>
-      </section>
-      <h1>Sudaderas</h1>
-      <section class="card-section">
-        <div class="card-row">
-          <div v-for="(product, index) in filteredSudaderas" :key="index" class="product-card">
-            <img :src="product.image" alt="Product Image">
-            <h3>{{ product.nombre }}</h3>
-            <p>{{ product.description }}</p>
-            <p>Precio: {{ formatPrice(product.price) }} {{ selectedCurrency }}</p>
-            <label>Cantidad:
-              <input type="number" v-model="product.quantity" min="1">
-            </label>
-            <button @click="addToCart(index, product.quantity)">Agregar al carrito</button>
-          </div>
-        </div>
-      </section>
+
+
+
 
 
 
@@ -169,7 +131,7 @@
       </div>
 
       <button @click="toggleCart" class="open-cart-icon" v-if="!isCartOpen">
-        <span class="material-symbols-outlined md-32">shopping_bag</span>
+        <span class="material-symbols-outlined md-36"> shopping_cart</span>
         <div class="cart-update-indicator" v-show="isUpdateIndicatorVisible">
           {{ countTotalItemsInCart() }}
         </div>
