@@ -34,14 +34,16 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "80:80"  
+        - "80:80"
     volumes:
-      - ./nginx/mynginx.conf:/etc/nginx/nginx.conf:ro
+        - ./nginx/mynginx.conf:/etc/nginx/nginx.conf:ro
+        - ./nginx_config/.htpasswd:/etc/nginx/.htpasswd:ro
     depends_on:
-      - flask-app
-      - frontend
+        - flask-app
+        - frontend
     networks:
-      - mynet
+        - mynet
+
 
 networks:
   mynet:
