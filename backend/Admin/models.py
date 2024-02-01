@@ -1,18 +1,20 @@
 from . import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
-from sqlalchemy.dialects.postgresql import BYTEA
+from datetime import datetime
+from sqlalchemy import LargeBinary
 
 
 class Articulo(db.Model):
+    __tablename__ = "articulo"
     id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(255), nullable=False)
-    descripcion = db.Column(db.Text)
+    nombre = db.Column(db.String(100), nullable=False)
+    descripcion = db.Column(db.Text, nullable=False)
     precio = db.Column(db.Float, nullable=False)
-    imagen = db.Column(db.String(2000), nullable=True)
-    categoria = db.Column(db.String(255))
-    fecha_creacion = db.Column(db.DateTime(timezone=True), default=func.now())
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    imagen = db.Column(LargeBinary)
+    categoria = db.Column(db.String(50), nullable=False)
+    fecha_creacion = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
 
 class User(db.Model, UserMixin):

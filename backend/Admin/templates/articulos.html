@@ -6,7 +6,7 @@
   <table class="table table-bordered">
     <thead>
       <tr>
-        <th>Imagen</th>
+        <th>ID</th>
         <th>Nombre</th>
         <th>Descripción</th>
         <th>Categoría</th>
@@ -17,9 +17,7 @@
     <tbody>
       {% for articulo in user.articulos %}
         <tr>
-          <td>
-            <img src="{{ articulo.imagen }}" alt="{{ articulo.nombre }}" style="max-width: 100px; max-height: 100px;">
-          </td>
+          <td>{{ articulo.id}}</td>
           <td>{{ articulo.nombre }}</td>
           <td>{{ articulo.descripcion }}</td>
           <td>{{ articulo.categoria }}</td>

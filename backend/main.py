@@ -1,39 +1,47 @@
 from flask_restful import Api, Resource
 from Admin import create_app, db
-from flask import render_template, jsonify, request, redirect, url_for
+from flask import render_template, jsonify, request, redirect, url_for, send_file
 from flask_login import current_user, login_required
 from Admin.models import Articulo
 import os
 from werkzeug.utils import secure_filename
+import base64
+import io
 
 app = create_app()
 api = Api(app)
 
 
-MAX_FILE_SIZE = 250 * 1024  # 250KB
+# MAX_FILE_SIZE = 250 * 1024  # 250KB
 
 
 def save_uploaded_file(file):
-    filename = secure_filename(file.filename)
-    folder_path = os.path.join(app.config["UPLOAD_FOLDER"])
-
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-
-    filepath = os.path.join(folder_path, filename)
-    absolute_filepath = os.path.abspath(filepath)
-
     try:
-        file.save(absolute_filepath)
-        return absolute_filepath
+        file_data = file.read()
+        return base64.b64encode(file_data)
     except Exception as e:
-        raise ValueError(f"No se pudo guardar el archivo: {str(e)}")
+        raise ValueError(f"No se pudo leer el archivo: {str(e)}")
 
 
 @app.route("/articulos")
 @login_required
 def articulos():
     return render_template("articulos.html", user=current_user)
+
+
+# Ruta para obtener la imagen del articulo
+@app.route("/api/articulos/imagen/<int:articulo_id>")
+def obtener_imagen_articulo(articulo_id):
+    articulo = Articulo.query.get(articulo_id)
+
+    if articulo is None or articulo.imagen is None:
+        return "Artículo no encontrado", 404
+
+    # Decodifica los datos binarios
+    imagen_decodificada = base64.b64decode(articulo.imagen)
+
+    # Devuelve la imagen como respuesta con el tipo de contenido adecuado
+    return send_file(io.BytesIO(imagen_decodificada), mimetype="image/jpeg")
 
 
 # Agrega la ruta para eliminar artículos

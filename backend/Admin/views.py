@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, flash, jsonify, redirect,
 from flask_login import login_required, current_user
 from .models import Articulo
 from . import db
+from .utils import save_uploaded_file
 import json
 
 views = Blueprint("views", __name__)
@@ -25,14 +26,16 @@ def crear():
         if not nombre or not precio:
             flash("Nombre y Precio son obligatorios", category="error")
         else:
+            data = request.form
             nuevo_articulo = Articulo(
-                nombre=nombre,
-                descripcion=descripcion,
-                precio=precio,
-                imagen=imagen,
-                categoria=categoria,
+                nombre=data.get("nombre"),
+                descripcion=data.get("descripcion"),
+                precio=data.get("precio"),
+                imagen=save_uploaded_file(request.files.get("imagen")),
+                categoria=data.get("categoria"),
                 user_id=current_user.id,
             )
+
             db.session.add(nuevo_articulo)
             db.session.commit()
             flash("Artículo creado correctamente", category="success")

@@ -4,7 +4,6 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash
 
-
 login_manager = LoginManager()
 db = SQLAlchemy()
 migrate = Migrate()
