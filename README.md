@@ -8,79 +8,48 @@ Este proyecto es una tienda online desarrollada utilizando Flask para el backend
 
 1. [Requisitos del Sistema](#requisitos-del-sistema)
 2. [Instalación](#instalación)
-   - [Backend (Flask)](#backend-flask)
-   - [Frontend (VUE)](#frontend-react)
 3. [Configuración](#configuración)
-4. [Estructura del Proyecto](#estructura-del-proyecto)
-5. [Contribuciones](#contribuciones)
-6. [Licencia](#licencia)
+4. [Contribuciones](#contribuciones)
+5. [Licencia](#licencia)
 
 ## Requisitos del Sistema
 
 - [Python](https://www.python.org/) (3.6 o superior)
 - [Node.js](https://nodejs.org/) (v12 o superior)
 - [npm](https://www.npmjs.com/)
+- [docker-compose](https://docs.docker.com/compose/)
 
-## Instalación
+# Instalación
 
-### Backend (Flask)
+1. Instalación de Docker
 
-1. Navega a la carpeta del backend:
+Asegúrate de tener Docker instalado en tu sistema. Puedes seguir las [instrucciones de instalación](https://docs.docker.com/get-docker/) específicas para tu sistema operativo.
 
-   ```bash
-   cd backend
-   ```
+2. Clonar el Repositorio
 
-2. Crea y activa un entorno virtual:
+Navega hasta la carpeta deseada y clona el repositorio de la aplicación:
 
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # En Windows: venv\Scripts\activate
-   ```
+````bash
+git clone https://github.com/TiendaOnlineReto3/tienda_reto3.git
 
-3. Instala las dependencias:
+3. Ejecuta Docker compose:
 
    ```bash
-   pip install -r requirements.txt
-   ```
+   docker-compose up --build
+````
 
-4. Inicia el servidor:
-
-   ```bash
-   python app.py
-   ```
-
-### Frontend (React)
-
-1. Navega a la carpeta del frontend:
+4. Navega al servidor:
 
    ```bash
-   cd frontend
+   localhost o ip:5000/
    ```
 
-2. Instala las dependencias:
+5. Navega a la pagina web:
 
    ```bash
-   npm install
+   localhost o ip:8080/
    ```
-
-3. Inicia la aplicación:
-
-   ```bash
-   npm start
-   ```
-
-## Configuración
-
-## Estructura del Proyecto
-
-- `backend`:
-- `frontend`:
 
 ## Contribuciones
 
 ¡Las contribuciones son bienvenidas! Si encuentras algún error o tienes mejoras que sugerir, por favor, crea un issue o envía un pull request.
-
-## Licencia
-
-Este proyecto está bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para obtener más detalles.
