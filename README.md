@@ -54,7 +54,3 @@ git clone https://github.com/TiendaOnlineReto3/tienda_reto3.git
 ## Contribuciones
 
 ¡Las contribuciones son bienvenidas! Si encuentras algún error o tienes mejoras que sugerir, por favor, crea un issue o envía un pull request.
-
-```
-
-```
