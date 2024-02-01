@@ -27,14 +27,14 @@ services:
     build:
       context: ./frontend
     expose:
-      - "80"  # Exponer el puerto 80 internamente
+      - "80"  
     networks:
       - mynet
 
   nginx:
     image: nginx:latest
     ports:
-      - "8080:80"  # Mapear el puerto 8080 externamente al puerto 80 interno de Nginx
+      - "80:80"  
     volumes:
       - ./nginx/mynginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
