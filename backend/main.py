@@ -1,4 +1,5 @@
 from flask_restful import Api, Resource
+from flask_cors import CORS  # Importa la extensión CORS
 from Admin import create_app, db
 from flask import render_template, jsonify, request, redirect, url_for, send_file
 from flask_login import current_user, login_required
@@ -10,6 +11,7 @@ import io
 
 app = create_app()
 api = Api(app)
+CORS(app)  # Habilita CORS en la aplicación
 
 
 # MAX_FILE_SIZE = 250 * 1024  # 250KB
