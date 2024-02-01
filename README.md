@@ -29,14 +29,15 @@ Asegúrate de tener Docker instalado en tu sistema. Puedes seguir las [instrucci
 
 Navega hasta la carpeta deseada y clona el repositorio de la aplicación:
 
-````bash
+```bash
 git clone https://github.com/TiendaOnlineReto3/tienda_reto3.git
+```
 
 3. Ejecuta Docker compose:
 
    ```bash
    docker-compose up --build
-````
+   ```
 
 4. Navega al servidor:
 
@@ -53,3 +54,7 @@ git clone https://github.com/TiendaOnlineReto3/tienda_reto3.git
 ## Contribuciones
 
 ¡Las contribuciones son bienvenidas! Si encuentras algún error o tienes mejoras que sugerir, por favor, crea un issue o envía un pull request.
+
+```
+
+```
