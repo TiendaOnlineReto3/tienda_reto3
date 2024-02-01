@@ -80,7 +80,6 @@ class ArticuloResource(Resource):
                     "nombre": articulo.nombre,
                     "descripcion": articulo.descripcion,
                     "precio": articulo.precio,
-                    "imagen": articulo.imagen,
                 }
             )
         else:
@@ -98,7 +97,6 @@ class ArticulosResource(Resource):
                     "nombre": articulo.nombre,
                     "descripcion": articulo.descripcion,
                     "precio": articulo.precio,
-                    "imagen": articulo.imagen,
                 }
                 for articulo in articulos
             ]
