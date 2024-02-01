@@ -36,7 +36,7 @@ services:
     ports:
       - "8080:80"  # Mapear el puerto 8080 externamente al puerto 80 interno de Nginx
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro  # Montar tu archivo de configuración de Nginx
+      - ./nginx/mynginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - flask-app
       - frontend
