@@ -10,7 +10,6 @@ Este proyecto es una tienda online desarrollada utilizando Flask para el backend
 2. [Instalación](#instalación)
 3. [Configuración](#configuración)
 4. [Contribuciones](#contribuciones)
-5. [Licencia](#licencia)
 
 ## Requisitos del Sistema
 
@@ -27,11 +26,11 @@ Asegúrate de tener Docker instalado en tu sistema. Puedes seguir las [instrucci
 
 2. Clonar el Repositorio
 
-Navega hasta la carpeta deseada y clona el repositorio de la aplicación:
+   Navega hasta la carpeta deseada y clona el repositorio de la aplicación:
 
-```bash
-git clone https://github.com/TiendaOnlineReto3/tienda_reto3.git
-```
+   ```bash
+   git clone https://github.com/TiendaOnlineReto3/tienda_reto3.git
+   ```
 
 3. Ejecuta Docker compose:
 
