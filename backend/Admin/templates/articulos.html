@@ -1,0 +1,54 @@
+{% extends "base.html" %} 
+{% block title %}Productos{% endblock %} 
+{% block content %}
+  <h1 align="center">Productos</h1>
+  
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Imagen</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Categoría</th>
+        <th>Precio</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for articulo in user.articulos %}
+        <tr>
+          <td>
+            <img src="{{ articulo.imagen }}" alt="{{ articulo.nombre }}" style="max-width: 100px; max-height: 100px;">
+          </td>
+          <td>{{ articulo.nombre }}</td>
+          <td>{{ articulo.descripcion }}</td>
+          <td>{{ articulo.categoria }}</td>
+          <td>${{ articulo.precio }}</td>
+          <td>
+            <button type="button" class="btn btn-danger" onClick="deleteArticulo({{ articulo.id }})">
+              Eliminar
+            </button>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <script>
+    function deleteArticulo(articuloId) {
+      // Realizar una solicitud DELETE al servidor
+      fetch(`/delete-articulo/${articuloId}`, {
+        method: 'DELETE',
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Manejar la respuesta del servidor, por ejemplo, recargar la página
+        window.location.reload();
+      })
+      .catch(error => {
+        console.error('Error al eliminar el artículo:', error);
+      });
+    }
+  </script>
+  
+{% endblock %}
