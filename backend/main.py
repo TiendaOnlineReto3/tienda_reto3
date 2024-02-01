@@ -1,9 +1,11 @@
+from flask_restful import Api, Resource
 from Admin import create_app, db
-from flask import render_template, jsonify
+from flask import render_template, jsonify, request
 from flask_login import current_user, login_required
-from Admin.models import Articulo  # Asegúrate de importar tu modelo Articulo
+from Admin.models import Articulo
 
 app = create_app()
+api = Api(app)
 
 
 @app.route("/articulos")
@@ -33,6 +35,63 @@ def delete_articulo(articulo_id):
 
     # Retorna una respuesta JSON indicando el éxito
     return jsonify({"success": True})
+
+
+# API
+# Creacion de la ruta de la API
+class ArticuloResource(Resource):
+    @login_required
+    def get(self, articulo_id):
+        articulo = Articulo.query.get(articulo_id)
+        if articulo:
+            return jsonify(
+                {
+                    "id": articulo.id,
+                    "nombre": articulo.nombre,
+                    "descripcion": articulo.descripcion,
+                    "precio": articulo.precio,
+                    "imagen": articulo.imagen,
+                }
+            )
+        else:
+            return jsonify({"error": "Artículo no encontrado"}), 404
+
+
+class ArticulosResource(Resource):
+    @login_required
+    def get(self):
+        articulos = Articulo.query.filter_by(user_id=current_user.id).all()
+        return jsonify(
+            [
+                {
+                    "id": articulo.id,
+                    "nombre": articulo.nombre,
+                    "descripcion": articulo.descripcion,
+                    "precio": articulo.precio,
+                    "imagen": articulo.imagen,
+                }
+                for articulo in articulos
+            ]
+        )
+
+    @login_required
+    def post(self):
+        data = request.get_json()
+        nuevo_articulo = Articulo(
+            nombre=data.get("nombre"),
+            descripcion=data.get("descripcion"),
+            precio=data.get("precio"),
+            imagen=data.get("imagen"),
+            categoria=data.get("categoria"),
+            user_id=current_user.id,
+        )
+        db.session.add(nuevo_articulo)
+        db.session.commit()
+        return jsonify({"success": True, "message": "Artículo creado correctamente"})
+
+
+api.add_resource(ArticuloResource, "/api/articulo/<int:articulo_id>")
+api.add_resource(ArticulosResource, "/api/articulos")
 
 
 if __name__ == "__main__":
