@@ -1,4 +1,5 @@
 version: '3'
+
 services:
   flask-app:
     build:
@@ -25,8 +26,20 @@ services:
   frontend:
     build:
       context: ./frontend
+    expose:
+      - "80"  # Exponer el puerto 80 internamente
+    networks:
+      - mynet
+
+  nginx:
+    image: nginx:latest
     ports:
-      - "8080:80"
+      - "8080:80"  # Mapear el puerto 8080 externamente al puerto 80 interno de Nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro  # Montar tu archivo de configuración de Nginx
+    depends_on:
+      - flask-app
+      - frontend
     networks:
       - mynet
 
