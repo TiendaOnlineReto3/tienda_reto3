@@ -1,6 +1,7 @@
 from . import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
+from sqlalchemy.dialects.postgresql import BYTEA
 
 
 class Articulo(db.Model):
@@ -8,7 +9,7 @@ class Articulo(db.Model):
     nombre = db.Column(db.String(255), nullable=False)
     descripcion = db.Column(db.Text)
     precio = db.Column(db.Float, nullable=False)
-    imagen = db.Column(db.String(255))
+    imagen = db.Column(db.String(2000), nullable=True)
     categoria = db.Column(db.String(255))
     fecha_creacion = db.Column(db.DateTime(timezone=True), default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))

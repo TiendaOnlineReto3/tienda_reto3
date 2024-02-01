@@ -35,7 +35,10 @@ def crear():
             )
             db.session.add(nuevo_articulo)
             db.session.commit()
-            flash("Articulo agregado!", category="success")
+            flash("Artículo creado correctamente", category="success")
+            return redirect(
+                url_for("views.crear")
+            )  # Redirige después de crear el artículo
 
     return render_template("crear.html", user=current_user)
 

@@ -17,6 +17,7 @@ def create_app():
         "SQLALCHEMY_DATABASE_URI"
     ] = "postgresql://user:pass@postgres-db:5432/base_datos"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["UPLOAD_FOLDER"] = "static/img"
 
     db.init_app(app)
     migrate.init_app(app, db)

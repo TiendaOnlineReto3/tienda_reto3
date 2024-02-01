@@ -1,11 +1,33 @@
 from flask_restful import Api, Resource
 from Admin import create_app, db
-from flask import render_template, jsonify, request
+from flask import render_template, jsonify, request, redirect, url_for
 from flask_login import current_user, login_required
 from Admin.models import Articulo
+import os
+from werkzeug.utils import secure_filename
 
 app = create_app()
 api = Api(app)
+
+
+MAX_FILE_SIZE = 250 * 1024  # 250KB
+
+
+def save_uploaded_file(file):
+    filename = secure_filename(file.filename)
+    folder_path = os.path.join(app.config["UPLOAD_FOLDER"])
+
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    filepath = os.path.join(folder_path, filename)
+    absolute_filepath = os.path.abspath(filepath)
+
+    try:
+        file.save(absolute_filepath)
+        return absolute_filepath
+    except Exception as e:
+        raise ValueError(f"No se pudo guardar el archivo: {str(e)}")
 
 
 @app.route("/articulos")
@@ -76,18 +98,30 @@ class ArticulosResource(Resource):
 
     @login_required
     def post(self):
-        data = request.get_json()
-        nuevo_articulo = Articulo(
-            nombre=data.get("nombre"),
-            descripcion=data.get("descripcion"),
-            precio=data.get("precio"),
-            imagen=data.get("imagen"),
-            categoria=data.get("categoria"),
-            user_id=current_user.id,
-        )
-        db.session.add(nuevo_articulo)
-        db.session.commit()
-        return jsonify({"success": True, "message": "Artículo creado correctamente"})
+        try:
+            data = request.form
+            imagen_file = request.files.get("imagen")
+
+            if not imagen_file:
+                return jsonify({"error": "Imagen no proporcionada"}), 400
+
+            nuevo_articulo = Articulo(
+                nombre=data.get("nombre"),
+                descripcion=data.get("descripcion"),
+                precio=data.get("precio"),
+                imagen=save_uploaded_file(imagen_file),
+                categoria=data.get("categoria"),
+                user_id=current_user.id,
+            )
+
+            db.session.add(nuevo_articulo)
+            db.session.commit()
+
+            # Realiza la redirección después de la creación exitosa
+            return redirect(url_for("views.crear"))
+
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 400
 
 
 api.add_resource(ArticuloResource, "/api/articulo/<int:articulo_id>")
