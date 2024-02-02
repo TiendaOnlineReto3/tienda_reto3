@@ -20,3 +20,7 @@ EXPOSE 80
 
 # Comando para iniciar Nginx
 CMD ["nginx", "-g", "daemon off;"]
+
+
+#Crear variables entorno en el servidor
+#docker run -e NGINX_USER=usuario -e NGINX_PASSWORD=contraseña -p 80:80 nombre_de_tu_imagen
