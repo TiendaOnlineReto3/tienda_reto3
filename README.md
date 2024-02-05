@@ -49,7 +49,58 @@ Asegúrate de tener Docker instalado en tu sistema. Puedes seguir las [instrucci
    ```bash
    localhost o ip:8080/
    ```
+### Tecnologías Utilizadas:
 
-## Contribuciones
+-   Backend:
 
-¡Las contribuciones son bienvenidas! Si encuentras algún error o tienes mejoras que sugerir, por favor, crea un issue o envía un pull request.
+    -   Flask: Un framework de desarrollo web en Python que proporciona una base sólida para la creación de aplicaciones web.
+    -   SQLAlchemy: Se empleó como un ORM (Mapeo Objeto-Relacional) para interactuar con la base de datos PostgreSQL de manera eficiente.
+    -   PostgreSQL: Una potente base de datos relacional que almacena la información de los productos, usuarios y pedidos.
+-   Frontend:
+
+    -   Vue.js: Un framework progresivo de JavaScript que facilita la creación de interfaces de usuario interactivas y dinámicas.
+    -   Vuex: Utilizado para la gestión del estado de la aplicación, especialmente para el manejo del carrito de compras.
+    -   Vue Router: Facilita la navegación dentro de la aplicación, permitiendo transiciones suaves entre las distintas páginas.
+-   Autenticación y Autorización:
+
+    -   Se implementó un sistema de inicio de sesión y registro de usuarios utilizando Flask-Login.
+    -   Se utilizó JSON Web Tokens (JWT) para gestionar la autenticación y autorización del usuario.
+
+### Funcionalidades:
+
+1.  Inicio de Sesión y Registro:
+
+    -   Los usuarios pueden crear cuentas o iniciar sesión con credenciales existentes.
+    -   Las contraseñas se almacenan de manera segura utilizando técnicas de hash.
+2.  Catálogo de Productos:
+
+    -   Los productos se muestran de manera atractiva y organizada en el frontend.
+    -   Información detallada sobre cada producto, incluyendo imágenes, descripciones y precios.
+3.  Añadir al Carrito:
+
+    -   Los usuarios pueden agregar productos al carrito de compras con un solo clic.
+    -   El estado del carrito se gestiona en el frontend mediante Vuex.
+4.  Gestión de Pedidos:
+
+    -   Implementación de un sistema de pedidos para realizar el seguimiento de las transacciones.
+    -   Los pedidos se almacenan en la base de datos y están vinculados a los usuarios autenticados.
+5.  Interfaz Intuitiva y Responsive:
+
+    -   El diseño de la interfaz se ha optimizado para ofrecer una experiencia de usuario intuitiva y agradable.
+    -   La aplicación es totalmente responsive, adaptándose a diferentes dispositivos y tamaños de pantalla.
+
+### Configuración y Ejecución:
+
+1.  Backend:
+
+    -   Configurar la base de datos PostgreSQL y actualizar la conexión en el archivo de configuración.
+    -   Instalar dependencias mediante el archivo `requirements.txt`.
+    -   Ejecutar el servidor Flask.
+2.  Frontend:
+
+    -   Instalar dependencias con `npm install` en el directorio del frontend.
+    -   Configurar las rutas y la URL de la API en el archivo de configuración.
+    -   Iniciar la aplicación Vue.js con `npm run serve`.
+3.  Navegación:
+
+    -   Acceder a la aplicación desde el navegador mediante la URL proporcionada por Vue.js.
